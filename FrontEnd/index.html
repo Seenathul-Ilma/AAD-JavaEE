@@ -25,12 +25,16 @@
                         <button type="button" id="getAllEvents" class="btn btn-secondary btn-sm"><i class="ti ti-timeline-event fs-6"></i> View</button>
                         <button type="button" id="new_event_btn" class="btn btn-secondary btn-sm"><i class="ti ti-copy-plus fs-6"></i> New</button>
                     </a>
+                    <form class="d-flex search" role="search">
+                        <input class="form-control form-control-sm me-2" id="search_event_input" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-secondary text-dark btn-sm" id="search_event_btn" type="submit"><i class="bi bi-search"></i></button>
+                    </form>
                 </div>
             </nav>
 
             <div class="d-grid gap-2 col-12 mx-0">
                 <div class="row">
-                    <!-- Customer Form -->
+                    <!-- Event Form -->
                     <div class="col-sm-5 mb-3 mb-sm-0" id="event-form">
                         <div class="card card-sm">
                             <div class="card-body">
@@ -71,7 +75,7 @@
                         </div>
                     </div>
 
-                    <!-- Customer Cards -->
+                    <!-- Event Cards -->
                     <div class="col-sm-7 mb-2 mb-sm-0">
                         <div class="card">
                             <div class="card-body">
@@ -96,6 +100,22 @@
         $(document).ready(function () {
             generateNextEventId();
             loadAllEvents();
+
+            function filterEvents() {
+                var value = $(this).val().toLowerCase();
+                $(".event-card").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            }
+
+            // to filter events at live (while typing)
+            $("#search_event_input").on("keyup", filterEvents);
+
+            // to filter events after click search btn
+            $('#search_event_btn').on('click', function (e) {
+                e.preventDefault();
+                filterEvents();
+            });
         });
 
         function loadAllEvents() {
@@ -153,34 +173,7 @@
             });
         }
 
-       /* function getAllEventCards() {
-            $.ajax({
-                url:apiUrl,
-                method: 'GET',
-                success: function (response) {
-                    //alert('Data fetched');
-                    renderEventCards(response);
-                    console.log(response);
-                },
-                error:function (error) {
-                    alert('Alert')
-                }
-            });
-        }*/
-
         $('#getAllEvents').click(function () {
-            /*$.ajax({
-               url:apiUrl,
-                method: 'GET',
-                success: function (response) {
-                   alert('Data fetched');
-                   renderEventCards(response);
-                   console.log(response);
-                },
-                error:function (error) {
-                   alert('Alert')
-                }
-            });*/
             loadAllEvents();
             $('#event_form_fieldset').prop('disabled', true);
         });
