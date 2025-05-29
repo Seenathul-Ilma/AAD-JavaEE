@@ -34,14 +34,14 @@ public class MimeTypes extends HttpServlet {
     }*/
 
     // 2
-    /*@Override
+    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String name = req.getParameter("name");
         String address = req.getParameter("address");
 
         resp.setContentType("text/plain");
         resp.getWriter().write(name + " - " + address);
-    }*/
+    }
 
     // 3
     /*@Override
@@ -52,6 +52,32 @@ public class MimeTypes extends HttpServlet {
         resp.setContentType("text/plain");
         resp.getWriter().write(name + " - " + fileName);
     }*/
+
+    /*@Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType("text/plain");
+
+        String name = req.getParameter("name");
+        String address = req.getParameter("address");
+        resp.getWriter().write(name + " - " + address);
+        System.out.println("Received POST request");
+        System.out.println("name: " + req.getParameter("name"));
+        System.out.println("address: " + req.getParameter("address"));
+
+
+        for (Part part : req.getParts()) {
+            // Skip form fields
+            if (part.getSubmittedFileName() == null) continue;
+
+            String fileName = part.getSubmittedFileName();
+            String uploadPath = "C:/IJSE/AAD/uploadFiles/" + fileName;   // Change path as needed
+
+            part.write(uploadPath); // Save file
+
+            resp.getWriter().write("Saved: " + fileName + "\n");
+        }
+    }
+*/
 
     // 4
     // raw - JSON
@@ -72,8 +98,8 @@ public class MimeTypes extends HttpServlet {
     // 5
     // raw - JSON
     // JSON Array
-    // read JSON Array data form httpRequest body
-    @Override
+    // Method 1 -> read JSON Array data form httpRequest body
+    /*@Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ObjectMapper mapper = new ObjectMapper();
         List<JsonNode> users = mapper.readValue(req.getReader(), new TypeReference<List<JsonNode>>(){});
@@ -84,5 +110,26 @@ public class MimeTypes extends HttpServlet {
         }
         resp.setContentType("text/plain");
         resp.getWriter().println("OK");
-    }
+    }*/
+
+    // raw - JSON
+    // JSON Array
+    // Method 2 -> read JSON Array data form httpRequest body
+    /*@Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonNode = mapper.readTree(req.getReader());
+
+        if (jsonNode.isArray()){
+            for (int i = 0; i < jsonNode.size(); i++) {
+                JsonNode node = jsonNode.get(i);
+
+                String name = node.get("name").asText();
+                String address = node.get("address").asText();
+
+                resp.setContentType("text/plain");
+                resp.getWriter().write(name + " " + address + "\n");
+            }
+        }
+    }*/
 }
